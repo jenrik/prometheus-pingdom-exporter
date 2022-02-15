@@ -11,7 +11,7 @@
 
 ## Getting `prometheus-pingdom-exporter`
 
-Download the latest release: https://github.com/giantswarm/prometheus-pingdom-exporter/releases/latest
+Download the latest release: https://github.com/duychau10/prometheus-pingdom-exporter/releases/tag/0.1.0
 
 Clone the git repository: https://github.com/giantswarm/prometheus-pingdom-exporter.git
 
