@@ -3,7 +3,7 @@ sudo: false # Explicitly use container-based infrastructure
 language: go
 
 go:
-  - 1.15
+  - 1.17
 
 env:
     - BUILDER_VERSION=0.11.0
@@ -11,7 +11,7 @@ env:
 cache:
     directories:
         - ./builder-cache
-        
+
 notifications:
     email: false
 
