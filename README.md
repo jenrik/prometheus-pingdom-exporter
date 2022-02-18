@@ -43,14 +43,20 @@ make docker-image
 
 Running the binary directly:
 ```
-$ prometheus-pingdom-exporter server <API-TOKEN>
-2016/07/09 12:20:51 Listening on port 8000
+$ prometheus-pingdom-exporter server --api_token <API-TOKEN>
+2022/02/18 17:15:20 Listening on port 8000
+
+$ prometheus-pingdom-exporter server --api_token_file <API-TOKEN-FILE>
+2022/02/18 17:20:48 Listening on port 8000
 ```
 
 Running in a Docker container:
 ```
-$ docker run -p 8000:8000 giantswarm/prometheus-pingdom-exporter:latest server <API-TOKEN>
-2016/07/09 11:22:04 Listening on port 8000
+$ docker run -p 8000:8000 giantswarm/prometheus-pingdom-exporter:latest server --api_token <API-TOKEN>
+2022/02/18 17:24:10 Listening on port 8000
+
+$ docker run -p 8000:8000 giantswarm/prometheus-pingdom-exporter:latest server --api_token_file <API-TOKEN-FILE>
+2022/02/18 17:29:55 Listening on port 8000
 ```
 
 Help information can be found with the `--help` flag.
