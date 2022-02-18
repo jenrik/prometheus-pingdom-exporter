@@ -3,6 +3,7 @@ package cmd
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -19,13 +20,16 @@ import (
 
 var (
 	serverCmd = &cobra.Command{
-		Use:   "server [api-token]",
+		Use:   "server -api_token_file [api-token-file] -api_token [api-token]",
 		Short: "Start the HTTP server",
 		Run:   serverRun,
 	}
 
 	waitSeconds int
 	port        int
+	api_token   string
+	token_file  string
+	content     string
 
 	pingdomUp = prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "pingdom_up",
@@ -48,6 +52,8 @@ func init() {
 
 	serverCmd.Flags().IntVar(&waitSeconds, "wait", 10, "time (in seconds) between accessing the Pingdom  API")
 	serverCmd.Flags().IntVar(&port, "port", 8000, "port to listen on")
+	serverCmd.Flags().StringVar(&token_file, "api_token_file", "", "Pingdom API Token file")
+	serverCmd.Flags().StringVar(&api_token, "api_token", "", "Pingdom API Token")
 
 	prometheus.MustRegister(pingdomUp)
 	prometheus.MustRegister(pingdomCheckStatus)
@@ -62,9 +68,18 @@ func serverRun(cmd *cobra.Command, args []string) {
 	var client *pingdom.Client
 	flag.Parse()
 
-	if len(cmd.Flags().Args()) == 1 {
+	if token_file != "" {
+		content, err := ioutil.ReadFile(token_file)
+		if err != nil {
+			log.Fatal(err)
+			os.Exit(1)
+		}
+		api_token = strings.TrimSpace(string(content))
+	}
+
+	if api_token != "" {
 		client, _ = pingdom.NewClientWithConfig(pingdom.ClientConfig{
-			APIToken: flag.Arg(1),
+			APIToken: api_token,
 		})
 	} else {
 		cmd.Help()
