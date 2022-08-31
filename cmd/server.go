@@ -40,12 +40,12 @@ var (
 	pingdomCheckStatus = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "pingdom_check_status",
 		Help: "The current status of the check (0: up, 1: unconfirmed_down, 2: down, -1: paused, -2: unknown)",
-	}, []string{"id", "name", "hostname", "resolution", "paused", "tags"})
+	}, []string{"id", "name", "hostname", "resolution", "tags"})
 
 	pingdomCheckResponseTime = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "pingdom_check_response_time",
 		Help: "The response time of last test in milliseconds",
-	}, []string{"id", "name", "hostname", "resolution", "paused", "tags"})
+	}, []string{"id", "name", "hostname", "resolution", "tags"})
 )
 
 func init() {
@@ -123,13 +123,6 @@ func serverRun(cmd *cobra.Command, args []string) {
 
 				resolution := strconv.Itoa(check.Resolution)
 
-				paused := strconv.FormatBool(check.Paused)
-				// Pingdom library doesn't report paused correctly,
-				// so calculate it off the status.
-				if check.Status == "paused" {
-					paused = "true"
-				}
-
 				var tagsRaw []string
 				for _, tag := range check.Tags {
 					tagsRaw = append(tagsRaw, tag.Name)
@@ -141,7 +134,6 @@ func serverRun(cmd *cobra.Command, args []string) {
 					check.Name,
 					check.Hostname,
 					resolution,
-					paused,
 					tags,
 				).Set(status)
 
@@ -150,7 +142,6 @@ func serverRun(cmd *cobra.Command, args []string) {
 					check.Name,
 					check.Hostname,
 					resolution,
-					paused,
 					tags,
 				).Set(float64(check.LastResponseTime))
 			}
